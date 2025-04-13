@@ -32,8 +32,17 @@ export async function POST(req: Request) {
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
 
-  } catch (error: any) {
+  } catch (error) {  // Remove explicit `: any` type
     console.error("ERROR in /api/sendMail:", error);
-    return new Response("Internal Server Error: " + error.message, { status: 500 });
+    
+    // Type-safe error message extraction
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : "Unknown error occurred";
+  
+    return new Response(`Internal Server Error: ${errorMessage}`, { 
+      status: 500 
+    });
   }
+  
 }
