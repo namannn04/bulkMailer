@@ -1,31 +1,40 @@
-import { type NextRequest, NextResponse } from "next/server"
-import nodemailer from "nodemailer"
-import { processEmailHtml } from "@/lib/email-utils"
+import { type NextRequest, NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+import { processEmailHtml } from "@/lib/email-utils";
 
-// This would be set in your environment variables
-// For this example, we're using a constant, but in production
-// you should use a secure environment variable
-const VALID_PASS_KEY = "bulkmailer@432005"
+// In production, use process.env.VALID_PASS_KEY
+const VALID_PASS_KEY = "bulkmailer@432005";
+
+// Define the expected request body type
+interface EmailRequestBody {
+  emails: string[];
+  subject: string;
+  htmlContent: string;
+  passKey: string;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { emails, subject, htmlContent, passKey } = await request.json()
+    const body = (await request.json()) as Partial<EmailRequestBody>;
+    const { emails, subject, htmlContent, passKey } = body;
 
     // Validate required fields
-    if (!emails || !subject || !htmlContent) {
-      return NextResponse.json({ success: false, message: "Missing required fields." }, { status: 400 })
+    if (!emails || !Array.isArray(emails) || !subject || !htmlContent) {
+      return NextResponse.json(
+        { success: false, message: "Missing required fields." },
+        { status: 400 }
+      );
     }
 
     // Validate pass key
     if (!passKey || passKey !== VALID_PASS_KEY) {
       return NextResponse.json(
         { success: false, message: "Invalid pass key. Email sending is restricted." },
-        { status: 403 },
-      )
+        { status: 403 }
+      );
     }
 
     // Create email transporter
-    // Note: In production, you should use environment variables for these credentials
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -35,10 +44,10 @@ export async function POST(request: NextRequest) {
       tls: {
         rejectUnauthorized: false,
       },
-    })
+    });
 
     // Process HTML to ensure email client compatibility
-    const processedHtml = processEmailHtml(htmlContent)
+    const processedHtml = processEmailHtml(htmlContent);
 
     // Set up mail options
     const mailOptions = {
@@ -51,24 +60,30 @@ export async function POST(request: NextRequest) {
         "X-MSMail-Priority": "High",
       },
       text: "Please view this email in an HTML-compatible email client.",
-    }
+    };
 
     // Send emails to all recipients
-    const emailPromises = emails.map((email: string) => {
+    const emailPromises = emails.map((email) => {
       return transporter.sendMail({
         ...mailOptions,
         to: email,
-      })
-    })
+      });
+    });
 
-    await Promise.all(emailPromises)
+    await Promise.all(emailPromises);
 
     return NextResponse.json({
       success: true,
       message: `Emails sent successfully to ${emails.length} recipients.`,
-    })
-  } catch (error: any) {
-    console.error("Error sending emails:", error)
-    return NextResponse.json({ success: false, message: error.message || "Failed to send emails." }, { status: 500 })
+    });
+  } catch (error: unknown) {
+    let errorMsg = "Failed to send emails.";
+    if (error instanceof Error) {
+      errorMsg = error.message;
+      console.error("Error sending emails:", error);
+    } else {
+      console.error("Unknown error sending emails:", error);
+    }
+    return NextResponse.json({ success: false, message: errorMsg }, { status: 500 });
   }
 }

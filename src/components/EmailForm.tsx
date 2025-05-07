@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import dynamic from "next/dynamic";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -53,40 +52,6 @@ export default function EmailForm() {
       setEmailContent(htmlCode);
     }
   }, [htmlCode, htmlMode]);
-
-
-  
-
-  // Quill editor modules/formats configuration
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["link", "image"],
-      ["clean"],
-    ],
-    clipboard: {
-      matchVisual: false,
-    },
-  };
-
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "list",
-    "bullet",
-    "align",
-    "link",
-    "image",
-  ];
 
   const validateEmails = (
     emailList: string[]
@@ -445,10 +410,10 @@ export default function EmailForm() {
                   style={{ minHeight: "340px" }}
                 >
                   {typeof window !== "undefined" && (
-                    <RichTextEditor 
-                    value={emailContent}
-                    onChange={setEmailContent}
-                  />
+                    <RichTextEditor
+                      value={emailContent}
+                      onChange={setEmailContent}
+                    />
                   )}
                 </div>
               )}
