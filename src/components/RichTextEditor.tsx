@@ -8,6 +8,7 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import { cn } from '@/lib/utils';
+import { Editor } from '@tiptap/react';
 
 interface RichTextEditorProps {
   value: string;
@@ -17,10 +18,8 @@ interface RichTextEditorProps {
 }
 
 // Separate MenuBar component to keep things clean
-function EditorMenuBar({ editor }: { editor: any }) {
-  if (!editor) {
-    return null;
-  }
+function EditorMenuBar({ editor }: { editor: Editor | null }) {
+    if (!editor) return null;
 
   return (
     <div className="border-b p-2 flex flex-wrap gap-1">
