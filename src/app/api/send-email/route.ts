@@ -2,8 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { processEmailHtml } from "@/lib/email-utils";
 
-// In production, use process.env.VALID_PASS_KEY
-const VALID_PASS_KEY = "bulkmailer@432005";
+const VALID_PASS_KEY = process.env.VALID_PASS_KEY;
 
 // Define the expected request body type
 interface EmailRequestBody {
