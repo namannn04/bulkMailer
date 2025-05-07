@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import 'react-quill/dist/quill.snow.css';
 :root {
   --background: #ffffff;
   --foreground: #171717;

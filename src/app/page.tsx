@@ -1,12 +1,10 @@
-import EmailForm from "@/components/EmailForm";
+import EmailForm from "@/components/EmailForm"
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black text-orange-600 font-mono p-8">
-      <h1 className="text-5xl font-bold">bulkMailer</h1>
-      <p className="mt-2">Win thousands of hearts at once...</p>
-      <hr className="border-orange-600 my-4" />
+    <main className="container mx-auto py-8 px-4">
+      <h1 className="text-2xl font-bold text-center mb-6">Bulk Email Sender</h1>
       <EmailForm />
     </main>
-  );
+  )
 }
