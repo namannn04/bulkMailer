@@ -207,8 +207,7 @@ export default function EmailForm() {
           if (errorJson.message) {
             errorMessage = errorJson.message;
           }
-        } catch (_e) {
-          // <-- yahi fix hai
+        } catch {
           if (errorText) {
             errorMessage += ` - ${errorText}`;
           }
@@ -240,13 +239,13 @@ export default function EmailForm() {
     } catch (error: unknown) {
       console.error("Request failed:", error);
       let errorMessage = "Failed to send emails";
-    
+
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (typeof error === "string") {
         errorMessage = error;
       }
-    
+
       setMessage(`Error: ${errorMessage}`);
       setIsError(true);
     } finally {
